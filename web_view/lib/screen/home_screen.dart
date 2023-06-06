@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+final HomeUrl = Uri.parse('https://github.com/zimmyrabbit');
+
 class HomeScreen extends StatelessWidget {
-  WebViewController? controller;
-  final HomeUrl = 'https://github.com/zimmyrabbit';
+
+  WebViewController controller = WebViewController()
+  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  ..loadRequest(HomeUrl);
 
   HomeScreen({super.key});
 
@@ -16,22 +20,22 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){
-            // http://
-            // https://
-            if(controller == null) return;
-            controller!.loadUrl(HomeUrl);
+            controller.loadRequest(HomeUrl);
           }, icon: Icon(
             Icons.home,
           ))
         ],
       ),
-      body: WebView(
-        onWebViewCreated: (WebViewController controller){
-          this.controller = controller;
-        },
-        initialUrl: HomeUrl,
-        javascriptMode: JavascriptMode.unrestricted,
+      body: WebViewWidget(
+        controller: controller,
       )
+      // WebView(
+      //   onWebViewCreated: (WebViewController controller){
+      //     this.controller = controller;
+      //   },
+      //   initialUrl: HomeUrl,
+      //   javascriptMode: JavascriptMode.unrestricted,
+      // )
     );
   }
 }
