@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
             // device의 size를 가져올 수 있음
             //width: MediaQuery.of(context).size.width,
             //height: MediaQuery.of(context).size.height,
-            child: Row(
+            child: Column(
               //MainAxisAlignment - 주축 정렬
               // start - 시작
               // end - 끝
@@ -33,27 +33,37 @@ class HomeScreen extends StatelessWidget {
               //MainAxisSize - 주축 크기
               // max - 최대
               // min - 최소
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
-                  color: Colors.red,
-                  width: 50.0,
-                  height: 50.0,
+                // Expanded / Flexible
+                // row/column 위젯의 children 에서만 사용!!
+                Flexible(
+                  child: Container(
+                    color: Colors.red,
+                    width: 50.0,
+                    height: 50.0,
+                  ),
                 ),
-                Container(
-                  color: Colors.orange,
-                  width: 50.0,
-                  height: 50.0,
+                Expanded(
+                  child: Container(
+                    color: Colors.orange,
+                    width: 50.0,
+                    height: 50.0,
+                  ),
                 ),
-                Container(
-                  color: Colors.yellow,
-                  width: 50.0,
-                  height: 50.0,
+                Expanded(
+                  child: Container(
+                    color: Colors.yellow,
+                    width: 50.0,
+                    height: 50.0,
+                  ),
                 ),
-                Container(
-                  color: Colors.green,
-                  width: 50.0,
-                  height: 50.0,
+                Expanded(
+                  child: Container(
+                    color: Colors.green,
+                    width: 50.0,
+                    height: 50.0,
+                  ),
                 ),
               ],
             )),
