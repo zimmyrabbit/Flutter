@@ -16,6 +16,8 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){
+            // http://
+            // https://
             if(controller == null) return;
             controller!.loadUrl(HomeUrl);
           }, icon: Icon(
