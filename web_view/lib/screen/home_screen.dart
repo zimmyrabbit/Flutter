@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  WebViewController? controller;
+  final HomeUrl = 'https://github.com/zimmyrabbit';
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +14,20 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.orange,
         title: Text('zimmyrabbit'),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: (){
+            if(controller == null) return;
+            controller!.loadUrl(HomeUrl);
+          }, icon: Icon(
+            Icons.home,
+          ))
+        ],
       ),
       body: WebView(
-        initialUrl: 'https://github.com/zimmyrabbit',
+        onWebViewCreated: (WebViewController controller){
+          this.controller = controller;
+        },
+        initialUrl: HomeUrl,
         javascriptMode: JavascriptMode.unrestricted,
       )
     );
