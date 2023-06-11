@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:random_number_generator/constant/color.dart';
 
@@ -9,6 +11,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<int> randomNumbers = [
+    123,
+    456,
+    789,
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,16 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        123,
-                        456,
-                        789,
-                      ]
-                      .asMap()
-                      .entries
+                      children: randomNumbers
+                          .asMap()
+                          .entries
                           .map(
                             (x) => Padding(
-                              padding: EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
+                              padding: EdgeInsets.only(
+                                  bottom: x.key == 2 ? 0 : 16.0),
                               child: Row(
                                 children: x.value
                                     .toString()
@@ -83,7 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: ElevatedButton.styleFrom(
                       primary: RED_COLOR,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      final rand = Random();
+                      final Set<int> newNumbers = {};
+
+                      while(newNumbers.length != 3) {
+                        final number = rand.nextInt(1000);
+                        newNumbers.add(number);
+                      }
+                      setState(() {
+                        randomNumbers = newNumbers.toList();
+                      });
+                    },
                     child: Text('생성하기!'),
                   ),
                 ),
