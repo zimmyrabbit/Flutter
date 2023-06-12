@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RouteTwoScreen extends StatelessWidget {
-  const RouteTwoScreen({super.key});
+class RouteThreeScreen extends StatelessWidget {
+  const RouteThreeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('route two'),
+        child: Text('route three'),
       ),
     );
   }
