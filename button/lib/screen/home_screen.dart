@@ -18,6 +18,40 @@ class HomeScreen extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {},
+                style: ButtonStyle(
+                  //Material tate
+                  //
+                  // hovered - 호버링 상태 (마우스 커서를 올려놓은 상태)
+                  // focused - 포커스 됐을때 (텍스트 필드)
+                  // pressed - 눌렸을때 (o)
+                  // dragged - 드래그 됐을때
+                  // selected - 선택됐을때 (체크박스, 라디오박스)
+                  // scrollUnder - 다른 컴포넌트 밑으로 스크롤링이 됐을때
+                  // disabled - 비활성화 됐을때 -> onPressed 함수에 null을 return할 시 비활성화 상태 (o)
+                  // erroe - 에러상태
+                  backgroundColor: MaterialStateProperty.all(
+                    Colors.black,
+                  ),
+                  foregroundColor: MaterialStateProperty.resolveWith(
+                      (Set<MaterialState> states) {
+                        if(states.contains(MaterialState.pressed)) {
+                          return Colors.white;
+                        } else {
+                          return Colors.red;
+                        }
+                      }
+                  ),
+                  padding: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                    if(states.contains((MaterialState.pressed))) {
+                      return EdgeInsets.all(100.0);
+                    }
+                    return EdgeInsets.all(20.0);
+                  })
+                ),
+                child: Text('Button Style'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   // 메인 칼라
                   primary: Colors.red,
