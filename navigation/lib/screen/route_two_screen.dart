@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navigation/layout/main_layout.dart';
+import 'package:navigation/screen/route_three_screen.dart';
 
 class RouteTwoScreen extends StatelessWidget {
   const RouteTwoScreen({super.key});
@@ -30,6 +31,43 @@ class RouteTwoScreen extends StatelessWidget {
           },
           child: Text('push named'),
         ),
+        ElevatedButton(
+          onPressed: () {
+            //pushReplacement = push
+            // [HomeScreen(), RouteOne(), RouteTwo(), RouteThree()]
+            // -> [HomeScreen(), RouteOne(), RouteThree()] RouteThree가 RouteTwo를 대체
+            /*
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => RouteThreeScreen(),
+              ),
+            );
+            */
+            //pushReplacementNamed = pushNamed
+            Navigator.of(context).pushReplacementNamed('/three');
+          },
+          child: Text('pushReplacement'),
+        ),
+
+        //pushAndRemoveUntil
+        // (route) => false
+        // [HomeScreen(), RouteOne(), RouteTwo(), RouteThree()]
+        // [RouteThree()]
+
+        // (route) => true
+        // [HomeScreen(), RouteOne(), RouteTwo(), RouteThree()]
+        // [HomeScreen(), RouteOne(), RouteTwo(), RouteThree()]
+
+        // (route) => route.settings.name == '/'
+        // [HomeScreen(), RouteThree()]
+        ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => RouteThreeScreen()),
+                (route) => route.settings.name == '/',
+              );
+            },
+            child: Text('pushAndRemoveUntil'))
       ],
     );
   }
