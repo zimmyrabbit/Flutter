@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  XFile? video;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: getBoxDecoration(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _Logo(),
-            SizedBox(
-              height: 30.0,
-            ),
-            _appName(),
-          ],
-        ),
-      ),
+      body: video == null ? renderEmpty() : renderVideo(),
+    );
+  }
+
+  Widget renderVideo() {
+    return Center(
+      child: Text('Video'),
     );
   }
 
@@ -35,15 +36,54 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget renderEmpty() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: getBoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _Logo(
+            onTap: onLogoTap,
+          ),
+          SizedBox(
+            height: 30.0,
+          ),
+          _appName(),
+        ],
+      ),
+    );
+  }
+
+  void onLogoTap() async {
+    final video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+    );
+
+    if (video != null) {
+      setState(() {
+        this.video = video;
+      });
+    }
+  }
 }
 
 class _Logo extends StatelessWidget {
-  const _Logo({super.key});
+  final VoidCallback onTap;
+
+  const _Logo({
+    required this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'asset/img/logo.png',
+    return GestureDetector(
+      onTap: onTap,
+      child: Image.asset(
+        'asset/img/logo.png',
+      ),
     );
   }
 }
