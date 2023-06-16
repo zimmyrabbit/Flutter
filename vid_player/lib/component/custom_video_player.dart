@@ -48,35 +48,103 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           VideoPlayer(
             videoPlayerController!,
           ),
-          _Controls(),
+          _Controls(
+            onReversePressed: onReversePressed,
+            onPlayPressed: onPlayPressed,
+            onFowardPressed: onFowardPressed,
+            isPlaying: videoPlayerController!.value.isPlaying,
+          ),
+          Positioned(
+            right: 0,
+            child: IconButton(
+              onPressed: () {},
+              color: Colors.white,
+              iconSize: 30.0,
+              icon: Icon(
+                Icons.photo_camera_back,
+              ),
+            ),
+          )
         ],
       ),
     );
   }
+
+  void onReversePressed() {
+    // 현재 영상이 어떤부분 실행 중 인지
+    final currentPosition = videoPlayerController!.value.position;
+
+    Duration position = Duration();
+
+    if (currentPosition.inSeconds > 3) {
+      position = currentPosition - Duration(seconds: 3);
+    }
+
+    videoPlayerController!.seekTo(position);
+  }
+
+  void onPlayPressed() {
+    // 이미 실행중이면 중지
+    // 실행중이 아니면 실행
+    setState(() {
+      if (videoPlayerController!.value.isPlaying) {
+        videoPlayerController!.pause();
+      } else {
+        videoPlayerController!.play();
+      }
+    });
+  }
+
+  void onFowardPressed() {
+    final maxPostion = videoPlayerController!.value.duration;
+    final currentPosition = videoPlayerController!.value.position;
+
+    Duration position = maxPostion;
+
+    if ( (maxPostion - Duration(seconds: 3)).inSeconds > currentPosition.inSeconds ) {
+      position = currentPosition + Duration(seconds: 3);
+    }
+
+    videoPlayerController!.seekTo(position);
+  }
 }
 
 class _Controls extends StatelessWidget {
-  const _Controls({super.key});
+  final VoidCallback onPlayPressed;
+  final VoidCallback onReversePressed;
+  final VoidCallback onFowardPressed;
+  final bool isPlaying;
+
+  const _Controls({
+    required this.onPlayPressed,
+    required this.onReversePressed,
+    required this.onFowardPressed,
+    required this.isPlaying,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        renderIconButton(
-          onPressed: () {},
-          iconData: Icons.rotate_left,
-        ),
-        renderIconButton(
-          onPressed: () {},
-          iconData: Icons.play_arrow,
-        ),
-        renderIconButton(
-          onPressed: () {},
-          iconData: Icons.rotate_right,
-        ),
-      ],
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          renderIconButton(
+            onPressed: onReversePressed,
+            iconData: Icons.rotate_left,
+          ),
+          renderIconButton(
+            onPressed: onPlayPressed,
+            iconData: isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+          renderIconButton(
+            onPressed: onFowardPressed,
+            iconData: Icons.rotate_right,
+          ),
+        ],
+      ),
     );
   }
 
