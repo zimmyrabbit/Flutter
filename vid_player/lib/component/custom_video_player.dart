@@ -37,15 +37,59 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-
-    if(videoPlayerController == null) {
+    if (videoPlayerController == null) {
       return CircularProgressIndicator();
     }
 
     return AspectRatio(
       aspectRatio: videoPlayerController!.value.aspectRatio,
-      child: VideoPlayer(
-        videoPlayerController!,
+      child: Stack(
+        children: [
+          VideoPlayer(
+            videoPlayerController!,
+          ),
+          _Controls(),
+        ],
+      ),
+    );
+  }
+}
+
+class _Controls extends StatelessWidget {
+  const _Controls({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        renderIconButton(
+          onPressed: () {},
+          iconData: Icons.rotate_left,
+        ),
+        renderIconButton(
+          onPressed: () {},
+          iconData: Icons.play_arrow,
+        ),
+        renderIconButton(
+          onPressed: () {},
+          iconData: Icons.rotate_right,
+        ),
+      ],
+    );
+  }
+
+  Widget renderIconButton({
+    required VoidCallback onPressed,
+    required IconData iconData,
+  }) {
+    return IconButton(
+      onPressed: onPressed,
+      iconSize: 30.0,
+      color: Colors.white,
+      icon: Icon(
+        iconData,
       ),
     );
   }
