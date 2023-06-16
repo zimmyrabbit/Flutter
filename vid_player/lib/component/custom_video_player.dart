@@ -42,8 +42,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       return CircularProgressIndicator();
     }
 
-    return VideoPlayer(
-      videoPlayerController!,
+    return AspectRatio(
+      aspectRatio: videoPlayerController!.value.aspectRatio,
+      child: VideoPlayer(
+        videoPlayerController!,
+      ),
     );
   }
 }
