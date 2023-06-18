@@ -61,6 +61,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     });
 
     setState(() {});
+
+    videoPlayerController!.play();
   }
 
   @override
