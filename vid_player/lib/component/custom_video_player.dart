@@ -6,9 +6,11 @@ import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
   final XFile video;
+  final VoidCallback onNewVideoPressed;
 
   const CustomVideoPlayer({
     required this.video,
+    required this.onNewVideoPressed,
     super.key,
   });
 
@@ -21,10 +23,23 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   Duration currentPosition = Duration();
   bool showControls = false;
 
+  // initStat는 state가 생성될 때 딱 1번만 실행된다
   @override
   void initState() {
     super.initState();
     initializeController();
+  }
+
+  //stateful widget이 실행된 이력이 있으나
+  //parameter만 변경되었을때 didUpdateWidget 실행
+  @override
+  void didUpdateWidget(covariant CustomVideoPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if(oldWidget.video.path != widget.video.path) {
+      //Controller 초기화
+      initializeController();
+    }
   }
 
   initializeController() async {
@@ -73,7 +88,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
               ),
             if (showControls)
               _NewVideo(
-                onPressed: onNewVideoPressed,
+                onPressed: widget.onNewVideoPressed,
               ),
             _SliderBottom(
               currentPosition: currentPosition,
@@ -93,8 +108,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       ),
     );
   }
-
-  void onNewVideoPressed() {}
 
   void onReversePressed() {
     // 현재 영상이 어떤부분 실행 중 인지
