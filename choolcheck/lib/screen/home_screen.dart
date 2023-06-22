@@ -10,6 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool choolCheckDone = false;
+
   // latitude - 위도 , longitude - 경도
   static final LatLng companyLayLng = LatLng(
     37.567795,
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       end.longitude,
                     );
 
-                    if(distance < okDistance) {
+                    if (distance < okDistance) {
                       isWithinRange = true;
                     }
                   }
@@ -105,10 +107,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       _CustomGoogleMap(
                         initialPosition: initialPosition,
-                        circle: isWithinRange ? withinDistanceCircle : notWithinDistanceCircle,
+                        circle: choolCheckDone
+                            ? checkDoneCircle
+                            : isWithinRange
+                                ? withinDistanceCircle
+                                : notWithinDistanceCircle,
                         marker: marker,
                       ),
-                      _ChoolCheckButton(),
+                      _ChoolCheckButton(
+                        isWithinRange: isWithinRange,
+                        choolCheckDone: choolCheckDone,
+                        onPressed: onChoolCheckPressed,
+                      ),
                     ],
                   );
                 });
@@ -122,6 +132,39 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  onChoolCheckPressed() async {
+    final result = await showDialog(
+      //stateful widget에서는 어디서든 context access 가능
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('출근하기'),
+          content: Text('출근을 하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('출근하기'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result) {
+      setState(() {
+        choolCheckDone = true;
+      });
+    }
   }
 
   Future<String> checkPermission() async {
@@ -199,12 +242,42 @@ class _CustomGoogleMap extends StatelessWidget {
 }
 
 class _ChoolCheckButton extends StatelessWidget {
-  const _ChoolCheckButton({super.key});
+  final bool isWithinRange;
+  final VoidCallback onPressed;
+  final bool choolCheckDone;
+
+  const _ChoolCheckButton({
+    required this.isWithinRange,
+    required this.onPressed,
+    required this.choolCheckDone,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Text('출근'),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.timelapse_outlined,
+            size: 50.0,
+            color: choolCheckDone
+                ? Colors.green
+                : isWithinRange
+                    ? Colors.blue
+                    : Colors.red,
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          if (!choolCheckDone && isWithinRange)
+            TextButton(
+              onPressed: onPressed,
+              child: Text('출근하기'),
+            ),
+        ],
+      ),
     );
   }
 }
