@@ -22,13 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: 17,
   );
 
-  static final double distance = 100;
+  static final double okDistance = 100;
 
   static final Circle withinDistanceCircle = Circle(
     circleId: CircleId('withinDistanceCircle'),
     center: companyLayLng,
     fillColor: Colors.blue.withOpacity(0.5),
-    radius: distance,
+    radius: okDistance,
     strokeColor: Colors.blue,
     strokeWidth: 1,
   );
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     circleId: CircleId('notWithinDistanceCircle'),
     center: companyLayLng,
     fillColor: Colors.red.withOpacity(0.5),
-    radius: distance,
+    radius: okDistance,
     strokeColor: Colors.red,
     strokeWidth: 1,
   );
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     circleId: CircleId('checkDoneCircle'),
     center: companyLayLng,
     fillColor: Colors.green.withOpacity(0.5),
-    radius: distance,
+    radius: okDistance,
     strokeColor: Colors.green,
     strokeWidth: 1,
   );
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: renderAppbar(),
-      body: FutureBuilder(
+      body: FutureBuilder<String>(
         //Future<T> 를 return 해주는 함수만 사용 가능
         future: checkPermission(),
         //future에 사용한 함수의 return 값을 AsyncSnapshot에서 받아볼 수 있음
@@ -76,16 +76,42 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (snapshot.data == '위치 권한이 허가 되었습니다.') {
-            return Column(
-              children: [
-                _CustomGoogleMap(
-                  initialPosition: initialPosition,
-                  circle: withinDistanceCircle,
-                  marker: marker,
-                ),
-                _ChoolCheckButton(),
-              ],
-            );
+            // StreamBuilder
+            // Geolocator의 값이 바뀔때마다 build 해준다.
+            return StreamBuilder<Position>(
+                stream: Geolocator.getPositionStream(),
+                builder: (context, snapshot) {
+                  print("snapshot.data ${snapshot.data}");
+                  print("snapshot.data ${snapshot.data.runtimeType}");
+
+                  bool isWithinRange = false;
+                  if (snapshot.hasData) {
+                    final start = snapshot.data!;
+                    final end = companyLayLng;
+
+                    final distance = Geolocator.distanceBetween(
+                      start.latitude,
+                      start.longitude,
+                      end.latitude,
+                      end.longitude,
+                    );
+
+                    if(distance < okDistance) {
+                      isWithinRange = true;
+                    }
+                  }
+
+                  return Column(
+                    children: [
+                      _CustomGoogleMap(
+                        initialPosition: initialPosition,
+                        circle: isWithinRange ? withinDistanceCircle : notWithinDistanceCircle,
+                        marker: marker,
+                      ),
+                      _ChoolCheckButton(),
+                    ],
+                  );
+                });
           }
 
           return Center(
