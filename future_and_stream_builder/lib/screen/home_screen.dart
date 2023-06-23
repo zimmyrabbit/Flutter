@@ -19,12 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
+        //child: FutureBuilder(
+        child: StreamBuilder<int> (
           //snapshot 데이터가 바뀔때 마다
           //builder 함수가 재실행 됨
           // setState 를 하지 않고도 변화 감지
-          future: getNumber(),
-          builder: (context, snapshot) {
+
+          //future: getNumber(),
+          stream: streamNumbers(),
+          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
             if(!snapshot.hasData) { //데이터가 있을때 위젯 렌더링
               //return Center(
                  //child: CircularProgressIndicator(),
@@ -85,5 +88,19 @@ class _HomeScreenState extends State<HomeScreen> {
     //throw Exception('에러가 발생했습니다');
 
     return random.nextInt(100);
+  }
+
+  Stream<int> streamNumbers() async* {
+    for(int i=0; i<10; i++) {
+
+      if(i == 5) {
+        throw Exception("i=5");
+      }
+
+      await Future.delayed(Duration(seconds: 1));
+
+      yield i;
+      print("yelid i : ${i}");
+    }
   }
 }
