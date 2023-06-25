@@ -1,0 +1,4 @@
+const APP_ID = '500cf05cae5b448fbb1758e8be18ed55';
+const CHANNEL_NAME ='Test1';
+const TEMP_TOKEN ='007eJxTYNi28tkOmzvHLyQ8CJ5+4uaPSYaF0ofal829I6DPY7Dy57YvCgymBgbJaQamyYmppkkmJhZpSUmG5qYWqRZJqYYWqSmmpn4Pp6c0BDIy/HdZz8TIAIEgPitDSGpxiSEDAwCzzCPs';
+
