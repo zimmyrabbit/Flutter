@@ -2,16 +2,17 @@ import 'package:calendar_schedular/const/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+class Calendar extends StatelessWidget {
+  final DateTime? selectedDay;
+  final DateTime focusedDay;
+  final OnDaySelected onDaySelected;
 
-  @override
-  State<Calendar> createState() => _CalendarState();
-}
-
-class _CalendarState extends State<Calendar> {
-  DateTime? selectedDay;
-  DateTime focusedDay = DateTime.now();
+  const Calendar({
+    required this.selectedDay,
+    required this.focusedDay,
+    required this.onDaySelected,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +46,7 @@ class _CalendarState extends State<Calendar> {
         selectedDecoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(6.0),
-          border: Border.all(
-            color: PRIMARY_COLOR,
-            width: 1.0
-          ),
+          border: Border.all(color: PRIMARY_COLOR, width: 1.0),
         ),
         outsideDecoration: BoxDecoration(
           shape: BoxShape.rectangle,
@@ -59,18 +57,7 @@ class _CalendarState extends State<Calendar> {
           color: PRIMARY_COLOR,
         ),
       ),
-      //특정 날짜를 고를 때 실행
-      // selectedDay - 실제 선택한 날짜
-      onDaySelected: (
-        DateTime selectedDay,
-        DateTime focusedDay,
-      ) {
-        print(selectedDay);
-        setState(() {
-          this.selectedDay = selectedDay;
-          this.focusedDay = selectedDay;
-        });
-      },
+      onDaySelected: onDaySelected,
       //선택된 날짜 표시
       selectedDayPredicate: (DateTime date) {
         if (selectedDay == null) {
