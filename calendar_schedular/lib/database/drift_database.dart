@@ -1,4 +1,4 @@
-// private 값들은 불러올 수 없음
+// import -> private 값들은 불러올 수 없음
 import 'dart:ffi';
 import 'dart:io';
 
@@ -10,7 +10,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-// private 값까지 불러올 수 있음
+// part -> private 값까지 불러올 수 있음
 // 현재파일의 이름과 dart 사이에 .g 추가
 part 'drift_database.g.dart';
 
@@ -24,13 +24,28 @@ part 'drift_database.g.dart';
 )
 
 //_$데이터베이스 이름 -> drift_database.g.dart 파일에 생성
-class LocalDatabase extends _$LocalDatabase{
-  LocalDatabase() : super(_openConnection())
+class LocalDatabase extends _$LocalDatabase {
+  LocalDatabase() : super(_openConnection());
+
+  //schedule insert
+  // primary key값 return 받을 수 있다
+  Future<int> createSchedule(SchedulesCompanion data) => into(schedules).insert(data);
+  // categoryColors insert
+  Future<int> createCategoryColor(CategoryColorsCompanion data) => into(categoryColors).insert(data);
+
+  // categoryColors select
+  Future<List<CategoryColor>> getCategoryColors() =>
+      select(categoryColors).get();
+
+  @override
+  //schemaVersion 1부터 시작
+  // database의 구조를 변경할떄마다 version을 올려줘야한다
+  int get schemaVersion => 1;
 }
 
-//db연결 
+//db연결
 LazyDatabase _openConnection() {
-  return LazyDatabase(() async{
+  return LazyDatabase(() async {
     // 앱을 특정기기에 설치했을때 앱 전용으로 사용할 수 있는 폴더의 위치
     final dbFolder = await getApplicationDocumentsDirectory();
     // 경로에 파일 생성
@@ -39,3 +54,7 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
+
+//code generation을 해주는 명령어
+//  terminal
+//  flutter pub run build_runner build
