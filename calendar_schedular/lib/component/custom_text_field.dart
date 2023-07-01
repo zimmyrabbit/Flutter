@@ -38,7 +38,19 @@ class CustomTextField extends StatelessWidget {
       // 에러가 있으면 에러를 String 값으로 리턴 해준다.
       validator: (String? value) {
         if(value == null || value.isEmpty) {
-          return '값을 입력해주세요';
+          return '값을 입력 해주세요';
+        }
+
+        if(isTime) {
+          int time  = int.parse(value);
+
+          if(time < 0) {
+            return '0 이상의 숫자를 입력 해주세요.';
+          }
+
+          if(time > 24) {
+            return '24 이하의 숫자를 입력 해주세요.';
+          }
         }
 
         return null;
@@ -48,6 +60,8 @@ class CustomTextField extends StatelessWidget {
       maxLines: isTime ? 1 : null,
       //전체 부모의 넓이만큼 넓히는 기능
       expands: isTime ? false : true,
+      //최대입력가능 글자
+      maxLength: 500,
       //TextField에 입력할때 키보드 기본 입력 값 설정
       keyboardType: isTime ? TextInputType.number : TextInputType.multiline,
       //숫자만 입력 가능 하도록
