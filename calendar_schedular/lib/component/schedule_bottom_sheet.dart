@@ -12,6 +12,10 @@ class ScheduleBottomSheet extends StatefulWidget {
 class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
+  int? startTime;
+  int? endTime;
+  String? content;
+
   @override
   Widget build(BuildContext context) {
     //입력키보드 창이 떴을때 올라온 만큼의 높이
@@ -31,15 +35,27 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
               child: Form(
+                // Form 의 controller 처럼 작용
                 key: formKey,
                 //입력할때 마다 validator 작용
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _Time(),
+                    _Time(
+                      onStartSaved: (String? value){
+                        startTime = int.parse(value!);
+                      },
+                      onEndSaved: (String? value) {
+                        endTime = int.parse(value!);
+                      },
+                    ),
                     SizedBox(height: 16.0),
-                    _Contents(),
+                    _Contents(
+                      onSaved: (String? value) {
+                        content = value;
+                      },
+                    ),
                     SizedBox(height: 16.0),
                     _ColorPicker(),
                     SizedBox(height: 16.0),
@@ -58,22 +74,36 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
 
   void onSavePressed() {
     //formkey는 생성을 했는데 Form 위젯과 결합을 안했을 때
-    if(formKey.currentState == null) {
+    if (formKey.currentState == null) {
       return;
     }
     //validate 실행 순간 Form아래에 있는
     //모든 TextFormField들의 validator가 실행된다
     // 하나라도 String값 리턴 시 에러로 판단 / 모두 null 일경우 true
-    if(formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
       print('에러가 없습니다.');
-    }else {
+      //Form 저장 시
+      // onSave 모두 실행
+      formKey.currentState!.save();
+      print('-------------------------');
+      print('StartTime : $startTime');
+      print('EndTime : $endTime');
+      print('Content : $content');
+    } else {
       print('에러가 있습니다.');
     }
   }
 }
 
 class _Time extends StatelessWidget {
-  const _Time({super.key});
+  final FormFieldSetter<String> onStartSaved;
+  final FormFieldSetter<String> onEndSaved;
+
+  const _Time({
+    required this.onStartSaved,
+    required this.onEndSaved,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +113,7 @@ class _Time extends StatelessWidget {
           child: CustomTextField(
             label: '시작 시간',
             isTime: true,
+            onSaved: onStartSaved,
           ),
         ),
         SizedBox(width: 16.0),
@@ -90,6 +121,7 @@ class _Time extends StatelessWidget {
           child: CustomTextField(
             label: '마감 시간',
             isTime: true,
+            onSaved: onEndSaved,
           ),
         ),
       ],
@@ -98,7 +130,12 @@ class _Time extends StatelessWidget {
 }
 
 class _Contents extends StatelessWidget {
-  const _Contents({super.key});
+  final FormFieldSetter<String> onSaved;
+
+  const _Contents({
+    required this.onSaved,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +143,7 @@ class _Contents extends StatelessWidget {
       child: CustomTextField(
         label: '내용',
         isTime: false,
+        onSaved: onSaved,
       ),
     );
   }
