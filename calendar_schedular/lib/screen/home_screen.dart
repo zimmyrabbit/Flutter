@@ -53,8 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
           context: context,
           //최대사이즈 전체화면 true
           isScrollControlled: true,
-          builder: (_){
-            return ScheduleBottomSheet();
+          builder: (_) {
+            return ScheduleBottomSheet(
+              selectdDate: selectedDay,
+            );
           },
         );
       },

@@ -7,7 +7,12 @@ import 'package:get_it/get_it.dart';
 import 'package:calendar_schedular/database/drift_database.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
-  const ScheduleBottomSheet({super.key});
+  final DateTime selectdDate;
+
+  const ScheduleBottomSheet({
+    required this.selectdDate,
+    super.key,
+  });
 
   @override
   State<ScheduleBottomSheet> createState() => _ScheduleBottomSheetState();
@@ -43,7 +48,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                 // Form 의 controller 처럼 작용
                 key: formKey,
                 //입력할때 마다 validator 작용
-                autovalidateMode: AutovalidateMode.always,
+                //autovalidateMode: AutovalidateMode.always,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -73,7 +78,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                           //print(snapshot.data);
                           return _ColorPicker(
                             colors: snapshot.hasData ? snapshot.data! : [],
-                            selectedColorId: selectedColorId!,
+                            selectedColorId: selectedColorId,
                             colorIdSetter: (int id) {
                               setState(() {
                                 selectedColorId = id;
@@ -176,7 +181,7 @@ typedef ColorIdSetter = void Function(int id);
 
 class _ColorPicker extends StatelessWidget {
   final List<CategoryColor> colors;
-  final int selectedColorId;
+  final int? selectedColorId;
   final ColorIdSetter colorIdSetter;
 
   const _ColorPicker({
@@ -195,17 +200,15 @@ class _ColorPicker extends StatelessWidget {
       // 상하 spacing
       runSpacing: 10.0,
       children: colors
-          .map(
-            (e) => GestureDetector(
-              onTap: (){
-                colorIdSetter(e.id);
-              },
-              child: renderColor(
-                e,
-                selectedColorId == e.id,
-              ),
-            )
-          )
+          .map((e) => GestureDetector(
+                onTap: () {
+                  colorIdSetter(e.id);
+                },
+                child: renderColor(
+                  e,
+                  selectedColorId == e.id,
+                ),
+              ))
           .toList(),
     );
   }
