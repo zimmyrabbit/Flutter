@@ -42,8 +42,20 @@ class LocalDatabase extends _$LocalDatabase {
   //    -> 업데이트 되었을 경우 지속적으로 받을 수 있다
 
   //schedult select
-  Stream<List<Schedule>> watchSchedules() =>
-      select(schedules).watch();
+  Stream<List<Schedule>> watchSchedules(DateTime date) =>
+    //final query = select(schedules);
+    //query.where((tbl) => tbl.date.equals(date));
+    //return query.watch();
+
+    //int number = 3;
+    //final resp = number.toString();
+    // '3' -> String
+    //final resp2 = number..toString();
+    // 3 -> int
+
+   (select(schedules)..where((tbl) => tbl.date.equals(date))).watch();
+
+
 
   @override
   //schemaVersion 1부터 시작
