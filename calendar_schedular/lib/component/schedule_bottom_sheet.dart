@@ -2,6 +2,7 @@ import 'package:calendar_schedular/component/custom_text_field.dart';
 import 'package:calendar_schedular/const/colors.dart';
 import 'package:calendar_schedular/database/drift_database.dart';
 import 'package:calendar_schedular/model/category_color.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:calendar_schedular/database/drift_database.dart';
@@ -100,7 +101,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     );
   }
 
-  void onSavePressed() {
+  void onSavePressed() async {
     //formkey는 생성을 했는데 Form 위젯과 결합을 안했을 때
     if (formKey.currentState == null) {
       return;
@@ -117,6 +118,17 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
       print('StartTime : $startTime');
       print('EndTime : $endTime');
       print('Content : $content');
+
+      final key = await GetIt.I<LocalDatabase>().createSchedule(
+        SchedulesCompanion(
+          date: Value(widget.selectdDate),
+          startTime: Value(startTime!),
+          endTime: Value(endTime!),
+          content: Value(content!),
+          colorId: Value(selectedColorId!),
+        ),
+      );
+      Navigator.of(context).pop();
     } else {
       print('에러가 있습니다.');
     }
