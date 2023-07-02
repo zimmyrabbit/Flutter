@@ -37,6 +37,14 @@ class LocalDatabase extends _$LocalDatabase {
   Future<List<CategoryColor>> getCategoryColors() =>
       select(categoryColors).get();
 
+  // get -> List로 값을 Future형태로 받을 수 있음 (단발성)
+  // watch -> List로 값을 Stream형태로 받을 수 있음
+  //    -> 업데이트 되었을 경우 지속적으로 받을 수 있다
+
+  //schedult select
+  Stream<List<Schedule>> watchSchedules() =>
+      select(schedules).watch();
+
   @override
   //schemaVersion 1부터 시작
   // database의 구조를 변경할떄마다 version을 올려줘야한다
