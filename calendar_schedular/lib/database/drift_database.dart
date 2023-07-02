@@ -56,12 +56,14 @@ class LocalDatabase extends _$LocalDatabase {
       OrderingTerm.asc(schedules.startTime),
     ]);
     return query.watch().map(
-          (rows) => rows.map(
-            (row) => ScheduleWithColor(
-              schedule: row.readTable(schedules),
-              categoryColor: row.readTable(categoryColors),
-            ),
-          ).toList(),
+          (rows) => rows
+              .map(
+                (row) => ScheduleWithColor(
+                  schedule: row.readTable(schedules),
+                  categoryColor: row.readTable(categoryColors),
+                ),
+              )
+              .toList(),
         );
 
     //int number = 3;
@@ -73,6 +75,10 @@ class LocalDatabase extends _$LocalDatabase {
     //return (select(schedules)
     //   ..where((tbl) => tbl.date.equals(date))).watch();
   }
+
+  //schedule delete
+  Future<int> removeSchedule(int id) =>
+      (delete(schedules)..where((tbl) => tbl.id.equals(id))).go();
 
   @override
   //schemaVersion 1부터 시작
