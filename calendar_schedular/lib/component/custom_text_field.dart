@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
+  final String initialValue;
+
   //true - 시간, false - 내용
   final bool isTime;
   final FormFieldSetter<String> onSaved;
@@ -12,6 +14,7 @@ class CustomTextField extends StatelessWidget {
     required this.label,
     required this.isTime,
     required this.onSaved,
+    required this.initialValue,
     super.key,
   });
 
@@ -63,6 +66,7 @@ class CustomTextField extends StatelessWidget {
       maxLines: isTime ? 1 : null,
       //전체 부모의 넓이만큼 넓히는 기능
       expands: isTime ? false : true,
+      initialValue: initialValue,
       //최대입력가능 글자
       maxLength: 500,
       //TextField에 입력할때 키보드 기본 입력 값 설정

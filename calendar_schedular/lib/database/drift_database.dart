@@ -80,6 +80,13 @@ class LocalDatabase extends _$LocalDatabase {
   Future<int> removeSchedule(int id) =>
       (delete(schedules)..where((tbl) => tbl.id.equals(id))).go();
 
+  //schedule update
+  Future<int> updateScheduleById(int id, SchedulesCompanion data) =>
+      (update(schedules)..where((tbl) => tbl.id.equals(id))).write(data);
+
+  Future<Schedule> getScheduleById(int id) =>
+      (select(schedules)..where((tbl) => tbl.id.equals(id))).getSingle();
+
   @override
   //schemaVersion 1부터 시작
   // database의 구조를 변경할떄마다 version을 올려줘야한다
