@@ -3,6 +3,8 @@ import 'package:scrollable_widget/layout/main_layout.dart';
 import 'package:scrollable_widget/screen/list_view_screen.dart';
 import 'package:scrollable_widget/screen/single_child_scroll_view_screen.dart';
 
+import 'grid_view_screen.dart';
+
 class ScreenModel {
   final WidgetBuilder builder;
   final String name;
@@ -22,6 +24,10 @@ class HomeScreen extends StatelessWidget {
     ScreenModel(
       builder: (_) => ListViewScreen(),
       name: 'ListViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => GridViewScreen(),
+      name: 'GridViewScreen',
     ),
   ];
 
