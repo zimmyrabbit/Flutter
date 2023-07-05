@@ -56,6 +56,8 @@ class GridViewScreen extends StatelessWidget {
           index: index,
         );
       },
+      //최대 갯수 지정
+      itemCount: 100,
     );
   }
 
