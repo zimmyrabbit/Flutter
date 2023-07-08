@@ -15,16 +15,53 @@ class CustomScrollViewScreen extends StatelessWidget {
           title: Text('CustomScrollViewScreen'),
           centerTitle: true,
         ),
-        renderBuilderSliverList(),
+        renderSliverGridBuilder(),
       ],
     ));
+  }
+
+  //GridView.builder와 유사
+  SliverGrid renderSliverGridBuilder() {
+    return SliverGrid(
+      delegate: SliverChildBuilderDelegate(
+            (context, index) {
+          return renderContainer(
+            color: rainbowColors[index % rainbowColors.length],
+            index: index,
+          );
+        },
+        childCount: 100,
+      ),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 150,
+      ),
+    );
+  }
+
+  //GridView.count 와 유사감
+  SliverGrid renderChildSliverGrind() {
+    return SliverGrid(
+      delegate: SliverChildListDelegate(
+        numbers
+            .map(
+              (e) => renderContainer(
+                color: rainbowColors[e % rainbowColors.length],
+                index: e,
+              ),
+            )
+            .toList(),
+      ),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+    );
   }
 
   // ListView.builder 생성자와 유사함
   SliverList renderBuilderSliverList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
+        (context, index) {
           return renderContainer(
             color: rainbowColors[index % rainbowColors.length],
             index: index,
