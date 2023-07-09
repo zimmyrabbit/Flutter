@@ -1,6 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:scrollable_widget/const/colors.dart';
 
+class _SliverFixedHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double maxHeight;
+  final double minHeight;
+
+  _SliverFixedHeaderDelegate({
+    required this.child,
+    required this.maxHeight,
+    required this.minHeight,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return SizedBox.expand(
+      child: child,
+    );
+  }
+
+  @override
+  //최대 높이
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  // covariant - 상속된 클래스도 사용가능
+  // oldDelegate - build가 실행되기 이전의 Delegate
+  // this - 새로운 delegate
+  // shouldRebuild - 새로 build를 해야할지 말지 결정
+  //  false - 빌드 안함, true - 빌드 다시함
+  //bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+  bool shouldRebuild(_SliverFixedHeaderDelegate oldDelegate) {
+    return oldDelegate.minHeight != this.minHeight ||
+        oldDelegate.maxHeight != this.maxHeight ||
+        oldDelegate.child != this.child;
+  }
+}
+
 class CustomScrollViewScreen extends StatelessWidget {
   final List<int> numbers = List.generate(100, (index) => index);
 
@@ -12,11 +55,34 @@ class CustomScrollViewScreen extends StatelessWidget {
         body: CustomScrollView(
       slivers: [
         renderSliverAppBar(),
+        renderSliverPersistentHeader(),
         renderBuilderSliverList(),
+        renderSliverPersistentHeader(),
         renderSliverGridBuilder(),
         renderBuilderSliverList(),
       ],
     ));
+  }
+
+  SliverPersistentHeader renderSliverPersistentHeader() {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverFixedHeaderDelegate(
+        child: Container(
+          color: Colors.black,
+          child: Center(
+            child: Text(
+              'ㅇㅇㅇ',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        maxHeight: 150,
+        minHeight: 75,
+      ),
+    );
   }
 
   //AppBar
