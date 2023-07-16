@@ -22,10 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    fetchData();
   }
 
   fetchData()async{
-    await Dio().get(
+    final response = await Dio().get(
       'http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst',
       queryParameters: {
         'serviceKey' : serviceKey,
@@ -37,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'searchCondition' : 'WEEK',
       }
     );
+
+    print(response.data);
   }
 
   @override
