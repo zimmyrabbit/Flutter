@@ -7,6 +7,7 @@ import 'package:dusty_dust/component/main_stat.dart';
 import 'package:dusty_dust/const/colors.dart';
 import 'package:dusty_dust/const/data.dart';
 import 'package:dusty_dust/model/stat_model.dart';
+import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../component/hourly_card.dart';
@@ -28,23 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   fetchData() async {
-    final response = await Dio().get(
-        'http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst',
-        queryParameters: {
-          'serviceKey': serviceKey,
-          'returnType': 'json',
-          'numOfRows': 30,
-          'pageNo': 1,
-          'itemCode': 'PM10',
-          'dataGubun': 'HOUR',
-          'searchCondition': 'WEEK',
-        });
+    final statModels = await StatRepository.fetchData();
 
-    print(
-      response.data['response']['body']['items'].map(
-        (item) => StatModel.fromJson(json: item),
-      ),
-    );
+    print(statModels);
   }
 
   @override
