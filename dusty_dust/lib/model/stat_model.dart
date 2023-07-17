@@ -36,25 +36,25 @@ class StatModel {
 
   //Json형태에서 부터 데이터를 받아온다.
   StatModel.fromJson({required Map<String, dynamic> json})
-      : daegu = double.parse(json['daegu']),
-        chungnam = double.parse(json['chungnam']),
-        incheon = double.parse(json['incheon']),
-        daejeon = double.parse(json['daejeon']),
-        gyeongbuk = double.parse(json['gyeongbuk']),
-        sejong = double.parse(json['sejong']),
-        gwangju = double.parse(json['gwangju']),
-        jeonbuk = double.parse(json['jeonbuk']),
-        gangwon = double.parse(json['gangwon']),
-        ulsan = double.parse(json['ulsan']),
-        jeonnam = double.parse(json['jeonnam']),
-        seoul = double.parse(json['seoul']),
-        busan = double.parse(json['busan']),
-        jeju = double.parse(json['jeju']),
-        chungbuk = double.parse(json['chungbuk']),
-        gyeongnam = double.parse(json['gyeongnam']),
+      : daegu = double.parse(json['daegu'] ?? '0'),
+        chungnam = double.parse(json['chungnam'] ?? '0'),
+        incheon = double.parse(json['incheon'] ?? '0'),
+        daejeon = double.parse(json['daejeon'] ?? '0'),
+        gyeongbuk = double.parse(json['gyeongbuk'] ?? '0'),
+        sejong = double.parse(json['sejong'] ?? '0'),
+        gwangju = double.parse(json['gwangju'] ?? '0'),
+        jeonbuk = double.parse(json['jeonbuk'] ?? '0'),
+        gangwon = double.parse(json['gangwon'] ?? '0'),
+        ulsan = double.parse(json['ulsan'] ?? '0'),
+        jeonnam = double.parse(json['jeonnam'] ?? '0'),
+        seoul = double.parse(json['seoul'] ?? '0'),
+        busan = double.parse(json['busan'] ?? '0'),
+        jeju = double.parse(json['jeju'] ?? '0'),
+        chungbuk = double.parse(json['chungbuk'] ?? '0'),
+        gyeongnam = double.parse(json['gyeongnam'] ?? '0'),
         dataTime = DateTime.parse(json['dataTime']),
         itemCode = parseItemCode(json['itemCode']),
-        gyeonggi = double.parse(json['gyeonggi']);
+        gyeonggi = double.parse(json['gyeonggi'] ?? '0');
 
   static ItemCode parseItemCode(String raw) {
     if (raw == 'PM2.5') {
