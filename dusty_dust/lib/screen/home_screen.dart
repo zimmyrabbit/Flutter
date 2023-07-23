@@ -9,6 +9,7 @@ import 'package:dusty_dust/const/data.dart';
 import 'package:dusty_dust/const/status_level.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
+import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../component/hourly_card.dart';
@@ -52,9 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
             List<StatModel> stats = snapshot.data!;
             StatModel recentStat = stats[0];
 
-            final status = statusLevel.where(
-              (element) => element.minFineDust < recentStat.seoul,
-            ).last;
+            final status = DataUtils.getStatusFromItemCodeAndValue(
+              value: recentStat.seoul,
+              itemCode: ItemCode.PM10,
+            );
 
             return CustomScrollView(
               slivers: [
