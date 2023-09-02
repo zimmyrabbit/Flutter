@@ -8,8 +8,10 @@ import '../const/colors.dart';
 class MainAppBar extends StatelessWidget {
   final StatusModel status;
   final StatModel stat;
+  final String region;
 
   const MainAppBar({
+    required this.region,
     required this.status,
     required this.stat,
     super.key,
@@ -33,7 +35,7 @@ class MainAppBar extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '서울',
+                  region,
                   style: ts.copyWith(
                     fontSize: 40.0,
                     fontWeight: FontWeight.w700,

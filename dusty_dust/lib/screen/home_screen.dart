@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 
 import '../component/hourly_card.dart';
 import '../component/main_drawer.dart';
+import '../const/regions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String region = regions[0];
+
   Future<List<StatModel>> fetchData() async {
     final statModels = await StatRepository.fetchData();
     return statModels;
@@ -32,7 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
-      drawer: MainDrawer(),
+      drawer: MainDrawer(
+        selectdRegion: region,
+        onRegionTap: (String region) {
+          setState(() {
+            this.region = region;
+          });
+          Navigator.of(context).pop();
+        },
+      ),
       body: FutureBuilder<List<StatModel>>(
           future: fetchData(),
           builder: (context, snapshot) {
@@ -61,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return CustomScrollView(
               slivers: [
                 MainAppBar(
+                  region: region,
                   status: status,
                   stat: recentStat,
                 ),
