@@ -26,9 +26,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String region = regions[0];
 
-  Future<List<StatModel>> fetchData() async {
-    final statModels = await StatRepository.fetchData();
-    return statModels;
+  Future<Map<ItemCode, List<StatModel>>> fetchData() async {
+    Map<ItemCode, List<StatModel>> stats = {};
+    for (ItemCode itemCode in ItemCode.values) {
+      final statModels = await StatRepository.fetchData(
+        itemCode: itemCode,
+      );
+      stats.addAll({
+        itemCode: statModels,
+      });
+    }
+    return stats;
   }
 
   @override
@@ -44,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.of(context).pop();
         },
       ),
-      body: FutureBuilder<List<StatModel>>(
+      body: FutureBuilder<Map<ItemCode,List<StatModel>>>(
           future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -61,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            List<StatModel> stats = snapshot.data!;
-            StatModel recentStat = stats[0];
+            Map<ItemCode,List<StatModel>> stats = snapshot.data!;
+            StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
             final status = DataUtils.getStatusFromItemCodeAndValue(
-              value: recentStat.seoul,
+              value: pm10RecentStat.seoul,
               itemCode: ItemCode.PM10,
             );
 
@@ -74,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MainAppBar(
                   region: region,
                   status: status,
-                  stat: recentStat,
+                  stat: pm10RecentStat,
                 ),
                 SliverToBoxAdapter(
                   child: Column(
