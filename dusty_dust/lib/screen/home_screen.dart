@@ -28,12 +28,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
     Map<ItemCode, List<StatModel>> stats = {};
+    List<Future> futures = [];
     for (ItemCode itemCode in ItemCode.values) {
-      final statModels = await StatRepository.fetchData(
-        itemCode: itemCode,
+      futures.add(
+        StatRepository.fetchData(
+          itemCode: itemCode,
+        ),
       );
+    }
+
+    final results = await Future.wait(futures);
+    for(int i=0; i<results.length; i++) {
+      final key = ItemCode.values[i];
+      final value = results[i];
+
       stats.addAll({
-        itemCode: statModels,
+        key: value,
       });
     }
     return stats;
@@ -52,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.of(context).pop();
         },
       ),
-      body: FutureBuilder<Map<ItemCode,List<StatModel>>>(
+      body: FutureBuilder<Map<ItemCode, List<StatModel>>>(
           future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -69,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            Map<ItemCode,List<StatModel>> stats = snapshot.data!;
+            Map<ItemCode, List<StatModel>> stats = snapshot.data!;
             StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
             final status = DataUtils.getStatusFromItemCodeAndValue(
