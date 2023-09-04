@@ -7,6 +7,7 @@ import 'package:dusty_dust/component/main_stat.dart';
 import 'package:dusty_dust/const/colors.dart';
 import 'package:dusty_dust/const/data.dart';
 import 'package:dusty_dust/const/status_level.dart';
+import 'package:dusty_dust/model/stat_and_status_model.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final results = await Future.wait(futures);
-    for(int i=0; i<results.length; i++) {
+    for (int i = 0; i < results.length; i++) {
       final key = ItemCode.values[i];
       final value = results[i];
 
@@ -87,6 +88,20 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCode: ItemCode.PM10,
             );
 
+            final ssmodel = stats.keys.map((key) {
+              final value = stats[key]!;
+              final stat = value[0];
+
+              return StatAndStatusModel(
+                itemCode: key,
+                status: DataUtils.getStatusFromItemCodeAndValue(
+                  value: stat.getLevelFromRegion(region),
+                  itemCode: key,
+                ),
+                stat: stat,
+              );
+            }).toList();
+
             return CustomScrollView(
               slivers: [
                 MainAppBar(
@@ -98,7 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CategoryCard(),
+                      CategoryCard(
+                        models: ssmodel,
+                        region: region,
+                      ),
                       const SizedBox(height: 16.0),
                       HourlyCard(),
                     ],
