@@ -109,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     region: region,
                     status: status,
                     stat: pm10RecentStat,
+                    dateTime: pm10RecentStat.dataTime,
+                    isExpanded: true,
                   ),
                   SliverToBoxAdapter(
                     child: Column(
