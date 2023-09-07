@@ -26,6 +26,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String region = regions[0];
+  bool isExpanded = true;
+  ScrollController scrollController = ScrollController();
+
+  @override
+  initState() {
+    super.initState();
+    scrollController.addListener(scrollListener);
+  }
+
+  @override
+  dispose() {
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
+  }
 
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
     Map<ItemCode, List<StatModel>> stats = {};
@@ -47,6 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
     return stats;
+  }
+
+  scrollListener() {
+    bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
+
+    if(isExpanded != this.isExpanded) {
+      setState(() {
+        this.isExpanded = isExpanded;
+      });
+    }
   }
 
   @override
@@ -104,13 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
             return Container(
               color: status.primaryColor,
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   MainAppBar(
                     region: region,
                     status: status,
                     stat: pm10RecentStat,
                     dateTime: pm10RecentStat.dataTime,
-                    isExpanded: true,
+                    isExpanded: isExpanded,
                   ),
                   SliverToBoxAdapter(
                     child: Column(
