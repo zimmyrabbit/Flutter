@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-
     final results = await Future.wait(futures);
     for (int i = 0; i < results.length; i++) {
       final key = ItemCode.values[i];
@@ -122,10 +121,24 @@ class _HomeScreenState extends State<HomeScreen> {
                           lightColor: status.lightColor,
                         ),
                         const SizedBox(height: 16.0),
-                        HourlyCard(
-                          darkColor: status.darkColor,
-                          lightColor: status.lightColor,
-                        ),
+                        ...stats.keys.map(
+                          (itemCode) {
+                            final stat = stats[itemCode]!;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: HourlyCard(
+                                darkColor: status.darkColor,
+                                lightColor: status.lightColor,
+                                region: region,
+                                category: DataUtils.getItemCodeKrString(
+                                    itemCode: itemCode),
+                                stats: stat,
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        const SizedBox(height: 16.0),
                       ],
                     ),
                   )
