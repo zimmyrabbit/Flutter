@@ -132,7 +132,7 @@ final statusLevel = [
     darkColor: Color(0xFF00675b),
     lightColor: Color(0xFF52c7b8),
     detailFontColor: Colors.black,
-    imagePath: 'asset/img/meidocre.png',
+    imagePath: 'asset/img/mediocre.png',
     comment: '보통통',
     minFineDust: 41,
     minUltraFineDust: 21,
