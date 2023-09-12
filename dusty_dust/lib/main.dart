@@ -16,7 +16,7 @@ void main() async {
 
   //ItemCode 별로 BOX 생성
   for(ItemCode itemCode in ItemCode.values) {
-    await Hive.openBox(itemCode.name);
+    await Hive.openBox<StatModel>(itemCode.name);
   }
 
   runApp(
@@ -24,8 +24,8 @@ void main() async {
       theme: ThemeData(
         fontFamily: 'sunflower',
       ),
-      //home: HomeScreen(),
-      home: TestScreen(),
+      home: HomeScreen(),
+      //home: TestScreen(),
     ),
   );
 }

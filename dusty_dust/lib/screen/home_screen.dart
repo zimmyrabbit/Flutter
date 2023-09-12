@@ -12,6 +12,7 @@ import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../component/hourly_card.dart';
 import '../component/main_drawer.dart';
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
-    Map<ItemCode, List<StatModel>> stats = {};
+    //Map<ItemCode, List<StatModel>> stats = {};
     List<Future> futures = [];
     for (ItemCode itemCode in ItemCode.values) {
       futures.add(
@@ -53,21 +54,40 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
     final results = await Future.wait(futures);
+    
+    //HIVE에 데이터 넣기
     for (int i = 0; i < results.length; i++) {
+      // ItemCode
       final key = ItemCode.values[i];
+      // List<StatModel>
       final value = results[i];
 
-      stats.addAll({
-        key: value,
-      });
+      final box = Hive.box<StatModel>(key.name);
+
+      for (StatModel stat in value) {
+        box.put(stat.dataTime.toString(), stat);
+      }
+
+      //stats.addAll({
+      //  key: value,
+      //});
     }
-    return stats;
+    return ItemCode.values.fold<Map<ItemCode,List<StatModel>>>(
+      {},
+      (previousValue, itemCode) {
+        final box = Hive.box<StatModel>(itemCode.name);
+        previousValue.addAll({
+          itemCode : box.values.toList(),
+        });
+        return previousValue;
+      },
+    );
   }
 
   scrollListener() {
     bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
 
-    if(isExpanded != this.isExpanded) {
+    if (isExpanded != this.isExpanded) {
       setState(() {
         this.isExpanded = isExpanded;
       });
@@ -121,64 +141,64 @@ class _HomeScreenState extends State<HomeScreen> {
           }).toList();
 
           return Scaffold(
-              drawer: MainDrawer(
-                selectdRegion: region,
-                onRegionTap: (String region) {
-                  setState(() {
-                    this.region = region;
-                  });
-                  Navigator.of(context).pop();
-                },
-                lightColor: status.darkColor,
-                darkColor: status.lightColor,
-              ),
-              body: Container(
-                color: status.primaryColor,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    MainAppBar(
-                      region: region,
-                      status: status,
-                      stat: pm10RecentStat,
-                      dateTime: pm10RecentStat.dataTime,
-                      isExpanded: isExpanded,
-                    ),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          CategoryCard(
-                            models: ssmodel,
-                            region: region,
-                            darkColor: status.darkColor,
-                            lightColor: status.lightColor,
-                          ),
-                          const SizedBox(height: 16.0),
-                          ...stats.keys.map(
-                                (itemCode) {
-                              final stat = stats[itemCode]!;
+            drawer: MainDrawer(
+              selectdRegion: region,
+              onRegionTap: (String region) {
+                setState(() {
+                  this.region = region;
+                });
+                Navigator.of(context).pop();
+              },
+              lightColor: status.darkColor,
+              darkColor: status.lightColor,
+            ),
+            body: Container(
+              color: status.primaryColor,
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  MainAppBar(
+                    region: region,
+                    status: status,
+                    stat: pm10RecentStat,
+                    dateTime: pm10RecentStat.dataTime,
+                    isExpanded: isExpanded,
+                  ),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CategoryCard(
+                          models: ssmodel,
+                          region: region,
+                          darkColor: status.darkColor,
+                          lightColor: status.lightColor,
+                        ),
+                        const SizedBox(height: 16.0),
+                        ...stats.keys.map(
+                          (itemCode) {
+                            final stat = stats[itemCode]!;
 
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: HourlyCard(
-                                  darkColor: status.darkColor,
-                                  lightColor: status.lightColor,
-                                  region: region,
-                                  category: DataUtils.getItemCodeKrString(
-                                      itemCode: itemCode),
-                                  stats: stat,
-                                ),
-                              );
-                            },
-                          ).toList(),
-                          const SizedBox(height: 16.0),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: HourlyCard(
+                                darkColor: status.darkColor,
+                                lightColor: status.lightColor,
+                                region: region,
+                                category: DataUtils.getItemCodeKrString(
+                                    itemCode: itemCode),
+                                stats: stat,
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
+                  )
+                ],
               ),
+            ),
           );
         });
   }
