@@ -1,6 +1,8 @@
 import 'package:dusty_dust/component/main_card.dart';
+import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../const/colors.dart';
 import '../model/stat_and_status_model.dart';
@@ -37,20 +39,33 @@ class CategoryCard extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   physics: PageScrollPhysics(),
-                  children: models
+                  children: ItemCode.values
                       .map(
-                        (model) => MainStat(
-                            category: DataUtils.getItemCodeKrString(
-                              itemCode: model.itemCode,
-                            ),
-                            imgPath: model.status.imagePath,
-                            level: model.status.label,
-                            stat: '${model.stat.getLevelFromRegion(
-                              region,
-                            )}${DataUtils.getUnitFromDataType(
-                              itemCode: model.itemCode,
-                            )}',
-                            width: constraint.maxWidth / 3),
+                        (ItemCode itemCode) => ValueListenableBuilder<Box>(
+                          valueListenable:
+                              Hive.box<StatModel>(itemCode.name).listenable(),
+                          builder: (context, box, widget) {
+                            final stat = (box.values.toList().last as StatModel);
+                            final status =
+                                DataUtils.getStatusFromItemCodeAndValue(
+                              value: stat.getLevelFromRegion(region),
+                              itemCode: itemCode,
+                            );
+
+                            return MainStat(
+                                category: DataUtils.getItemCodeKrString(
+                                  itemCode: itemCode,
+                                ),
+                                imgPath: status.imagePath,
+                                level: status.label,
+                                stat: '${stat.getLevelFromRegion(
+                                  region,
+                                )}${DataUtils.getUnitFromDataType(
+                                  itemCode: itemCode,
+                                )}',
+                                width: constraint.maxWidth / 3);
+                          },
+                        ),
                       )
                       .toList(),
                   // List.generate(
