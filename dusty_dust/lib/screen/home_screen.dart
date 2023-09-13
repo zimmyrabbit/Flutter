@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dusty_dust/component/card_title.dart';
-import 'package:dusty_dust/component/category_card.dart';
+import 'package:dusty_dust/container/category_card.dart';
 import 'package:dusty_dust/component/main_app_bar.dart';
 import 'package:dusty_dust/component/main_card.dart';
 import 'package:dusty_dust/component/main_stat.dart';
@@ -14,7 +14,7 @@ import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../component/hourly_card.dart';
+import '../container/hourly_card.dart';
 import '../component/main_drawer.dart';
 import '../const/regions.dart';
 
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
-      valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
+      valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
       builder: (context, box, widget) {
         //box - pm10(미세먼지)
         final recentStat = box.values.toList().last as StatModel;

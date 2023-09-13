@@ -6,8 +6,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../const/colors.dart';
 import '../model/stat_and_status_model.dart';
-import 'card_title.dart';
-import 'main_stat.dart';
+import '../component/card_title.dart';
+import '../component/main_stat.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
